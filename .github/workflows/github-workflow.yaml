@@ -24,15 +24,15 @@ jobs:
           mask-variables: false
       - name: Build git-semver
         run: |
-          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }}
+          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.version }}
         shell: bash
         working-directory: ./src/git-semver
       - name: Test git-semver
         run: |
-          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }} git-semver ${{ env.VERSION }} ${{ github.ref_name }} ${{ github.sha }})
+          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.version }} git-semver ${{ env.version }} ${{ github.ref_name }} ${{ github.sha }})
           echo "::set-output name=next_version::$(echo $next_version)"
         shell: bash
       - name: Push git-semver
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.version }}
         shell: bash
