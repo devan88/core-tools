@@ -26,6 +26,7 @@ jobs:
         run: |
           docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }}
         shell: bash
+        working-directory: ./src/git-semver
       - name: Test git-semver
         run: |
           next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }} git-semver ${{ env.VERSION }} ${{ github.ref_name }} ${{ github.sha }})
