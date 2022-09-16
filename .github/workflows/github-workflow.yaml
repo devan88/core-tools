@@ -31,7 +31,7 @@ jobs:
       - name: Test git-semver
         run: |
           next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }} git-semver ${{ steps.dotenv.outputs.version }} ${{ github.ref_name }} ${{ github.sha }})
-          echo "::set-output name=next_version::$(echo $next_version)"
+          echo "$next_version"
         shell: bash
       - name: Push git-semver
         run: |
