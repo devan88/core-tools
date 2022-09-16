@@ -17,7 +17,7 @@ jobs:
         uses: falti/dotenv-action@v0.2.8
         with:
           # the path to the .env file (including file name)
-          path: ./github/workflow/variables/variable.env
+          path: /.github/workflow/variables/variable.env
           # whether to log the variables to output or not
           log-variables: true
           # whether to mask the variables as secrets or not
