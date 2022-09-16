@@ -1,0 +1,37 @@
+name: main-tools
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+      - "release"
+      - "development"
+      - "feature/*"
+jobs:
+  build-git-semver:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Dotenv Action
+        uses: falti/dotenv-action@v0.2.8
+        with:
+          # the path to the .env file (including file name)
+          path: ./github/workflow/variables/variable.env
+          # whether to log the variables to output or not
+          log-variables: true
+          # whether to mask the variables as secrets or not
+          mask-variables: false
+      - name: Build git-semver
+        run: |
+          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }}
+        shell: bash
+      - name: Test git-semver
+        run: |
+          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }} git-semver ${{ env.VERSION }} ${{ github.ref_name }} ${{ github.sha }})
+          echo "::set-output name=next_version::$(echo $next_version)"
+        shell: bash
+      - name: Push git-semver
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.VERSION }}
+        shell: bash
