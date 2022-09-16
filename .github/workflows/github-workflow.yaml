@@ -25,16 +25,16 @@ jobs:
           mask-variables: false
       - name: Build git-semver
         run: |
-          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }}
+          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/core-tools-git-semver:${{ steps.dotenv.outputs.version }}
         shell: bash
         working-directory: ./src/git-semver
       - name: Test git-semver
         run: |
-          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }} git-semver ${{ steps.dotenv.outputs.version }} ${{ github.ref_name }} ${{ github.sha }})
+          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/core-tools-git-semver:${{ steps.dotenv.outputs.version }} git-semver ${{ steps.dotenv.outputs.version }} ${{ github.ref_name }} ${{ github.sha }})
           echo "$next_version"
         shell: bash
       - name: Push git-semver
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }}
+          docker push ghcr.io/${{ github.repository_owner }}/core-tools-git-semver:${{ steps.dotenv.outputs.version }}
         shell: bash
