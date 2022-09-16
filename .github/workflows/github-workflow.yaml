@@ -14,6 +14,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
       - name: Dotenv Action
+        id: dotenv
         uses: falti/dotenv-action@v0.2.8
         with:
           # the path to the .env file (including file name)
@@ -24,15 +25,15 @@ jobs:
           mask-variables: false
       - name: Build git-semver
         run: |
-          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.version }}
+          docker build -f ./Dockerfile . -t ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }}
         shell: bash
         working-directory: ./src/git-semver
       - name: Test git-semver
         run: |
-          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.version }} git-semver ${{ env.version }} ${{ github.ref_name }} ${{ github.sha }})
+          next_version=$(docker run --rm ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }} git-semver ${{ steps.dotenv.outputs.version }} ${{ github.ref_name }} ${{ github.sha }})
           echo "::set-output name=next_version::$(echo $next_version)"
         shell: bash
       - name: Push git-semver
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/git-semver:${{ env.version }}
+          docker push ghcr.io/${{ github.repository_owner }}/git-semver:${{ steps.dotenv.outputs.version }}
         shell: bash
